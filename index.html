@@ -9,10 +9,14 @@
   <meta property="og:title" content="何国希 He Guoxi｜学术个人主页">
   <meta property="og:description" content="计算社会科学 · 人口社会学 · 历史社会学">
   <title>何国希 He Guoxi｜学术个人主页</title>
+  <link rel="canonical" href="https://yoesher.github.io/">
+  <script src="./canonical.js?v=20261019-bilingual1"></script>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./design.css">
   <link rel="stylesheet" href="./portfolio.css">
-  <script src="./app.js" defer></script>
+  <link rel="stylesheet" href="./language.css?v=20261019-bilingual1">
+  <script src="./i18n.js?v=20261019-bilingual1" defer></script>
+  <script src="./app.js?v=20261019-bilingual1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳转到正文</a>
@@ -20,10 +24,13 @@
   <header class="site-header">
     <div class="header-inner">
       <a class="wordmark" href="#home" aria-label="何国希，返回首页">何国希<span>HE GUOXI</span></a>
-      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-nav"><span>菜单</span><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14M3 13h14"/></svg></button>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-nav" aria-label="打开主导航"><span>菜单</span><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14M3 13h14"/></svg></button>
       <nav id="main-nav" class="main-nav" aria-label="主导航">
         <a href="#research">研究方向</a><a href="#publications">学术论文</a><a href="#experience">项目与荣誉</a><a href="#opensource">开源项目</a><a href="#about">关于我</a><a class="nav-contact" href="#contact">联系 <span aria-hidden="true">↗</span></a>
       </nav>
+      <div class="language-switch" role="group" aria-label="选择网站语言">
+        <button type="button" data-language="zh-CN" lang="zh-CN" aria-pressed="true" aria-label="切换为简体中文">简体中文</button><span aria-hidden="true">/</span><button type="button" data-language="en" lang="en" aria-pressed="false" aria-label="切换为英语">English</button>
+      </div>
     </div>
   </header>
   <main id="main">

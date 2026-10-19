@@ -1,13 +1,16 @@
 'use strict';
+const t = (key, variables) => window.siteI18n.t(key, variables);
 const menuButton = document.querySelector('.menu-toggle');
 const navigation = document.querySelector('#main-nav');
 function closeMenu() {
   menuButton.setAttribute('aria-expanded', 'false');
+  menuButton.setAttribute('aria-label', t('menuOpen'));
   navigation.classList.remove('is-open');
 }
 menuButton.addEventListener('click', () => {
   const open = menuButton.getAttribute('aria-expanded') !== 'true';
   menuButton.setAttribute('aria-expanded', String(open));
+  menuButton.setAttribute('aria-label', t(open ? 'menuClose' : 'menuOpen'));
   navigation.classList.toggle('is-open', open);
 });
 navigation.addEventListener('click', event => {
@@ -22,7 +25,7 @@ document.addEventListener('keydown', event => {
 document.addEventListener('click', event => {
   if (!event.target.closest('.site-header')) closeMenu();
 });
-window.matchMedia('(min-width: 801px)').addEventListener('change', event => {
+window.matchMedia('(min-width: 1101px)').addEventListener('change', event => {
   if (event.matches) closeMenu();
 });
 const copyButton = document.querySelector('.copy-email');
@@ -36,7 +39,7 @@ copyButton.addEventListener('click', async () => {
     } else {
       const field = document.createElement('textarea');
       field.value = email;
-      field.setAttribute('aria-label', '联系邮箱');
+      field.setAttribute('aria-label', t('emailField'));
       field.style.position = 'fixed';
       field.style.opacity = '0';
       document.body.appendChild(field);
@@ -46,15 +49,15 @@ copyButton.addEventListener('click', async () => {
       finally { field.remove(); copyButton.focus(); }
       if (!copied) throw new Error('Clipboard unavailable');
     }
-    copyButton.querySelector('span').textContent = '已复制邮箱';
-    copyStatus.textContent = '邮箱已复制：' + email;
+    copyButton.querySelector('span').textContent = t('emailCopied');
+    copyStatus.textContent = t('emailCopiedStatus', {email});
   } catch {
-    copyButton.querySelector('span').textContent = '请长按或选中上方邮箱复制';
-    copyStatus.textContent = '复制未完成，请选中上方邮箱手动复制。';
+    copyButton.querySelector('span').textContent = t('emailError');
+    copyStatus.textContent = t('emailErrorStatus');
   }
   clearTimeout(feedbackTimer);
   feedbackTimer = setTimeout(() => {
-    copyButton.querySelector('span').textContent = '复制邮箱';
+    copyButton.querySelector('span').textContent = t('emailCopy');
     copyStatus.textContent = '';
   }, 4500);
 });
@@ -76,17 +79,21 @@ if ('IntersectionObserver' in window) {
 const publicationStatus = document.querySelector('#publication-status');
 const papers = [...document.querySelectorAll('.paper')];
 const filters = [...document.querySelectorAll('[data-filter]')];
+function announceFilter() {
+  const filter = filters.find(button => button.getAttribute('aria-pressed') === 'true')?.dataset.filter || 'all';
+  const count = papers.filter(paper => !paper.hidden).length;
+  const key = filter === 'all' ? 'filterAll' : filter === 'published' ? 'filterPublished' : 'filterForthcoming';
+  publicationStatus.textContent = t(key, {count});
+}
 filters.forEach(button => button.addEventListener('click', () => {
   const filter = button.dataset.filter;
   filters.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
-  let visibleCount = 0;
   papers.forEach(paper => {
     const show = filter === 'all' || paper.dataset.status === filter;
     paper.hidden = !show;
     paper.classList.toggle('filter-enter', show);
-    if (show) visibleCount++;
   });
-  publicationStatus.textContent = '已显示' + visibleCount + '篇' + (filter === 'all' ? '论文' : filter === 'published' ? '已发表论文' : '待刊论文');
+  announceFilter();
 }));
 
 async function copyCitationText(text, trigger) {
@@ -96,7 +103,7 @@ async function copyCitationText(text, trigger) {
   }
   const field = document.createElement('textarea');
   field.value = text;
-  field.setAttribute('aria-label', '论文题录');
+  field.setAttribute('aria-label', t('citationField'));
   field.style.position = 'fixed';
   field.style.opacity = '0';
   document.body.appendChild(field);
@@ -106,21 +113,39 @@ async function copyCitationText(text, trigger) {
   finally { field.remove(); trigger.focus(); }
   if (!copied) throw new Error('Clipboard unavailable');
 }
+const citationTimers = new Map();
 document.querySelectorAll('.copy-citation').forEach(button => {
-  let resetTimer;
   button.addEventListener('click', async () => {
-    const citation = document.getElementById(button.dataset.citation).textContent.trim();
+    const citation = window.siteI18n.getCitation(button.dataset.citation);
     try {
       await copyCitationText(citation, button);
-      button.querySelector('span').textContent = '已复制';
-      publicationStatus.textContent = '题录已复制：' + citation;
+      button.querySelector('span').textContent = t('citationCopied');
+      publicationStatus.textContent = t('citationCopiedStatus', {citation});
     } catch {
-      button.querySelector('span').textContent = '请选中上方题录复制';
-      publicationStatus.textContent = '复制未完成，请选中题录手动复制。';
+      button.querySelector('span').textContent = t('citationError');
+      publicationStatus.textContent = t('citationErrorStatus');
+      if (window.siteI18n.language === 'en') button.closest('.paper').querySelector('.original-citation').open = true;
     }
-    clearTimeout(resetTimer);
-    resetTimer = setTimeout(() => { button.querySelector('span').textContent = '复制题录'; }, 4000);
+    clearTimeout(citationTimers.get(button));
+    citationTimers.set(button, setTimeout(() => {
+      button.querySelector('span').textContent = t('citationCopy');
+      citationTimers.delete(button);
+    }, 4000));
   });
+});
+
+document.addEventListener('site:languagechange', () => {
+  closeMenu();
+  clearTimeout(feedbackTimer);
+  copyButton.querySelector('span').textContent = t('emailCopy');
+  copyStatus.textContent = '';
+  citationTimers.forEach(timer => clearTimeout(timer));
+  citationTimers.clear();
+  document.querySelectorAll('.copy-citation').forEach(button => {
+    button.querySelector('span').textContent = t('citationCopy');
+  });
+  announceFilter();
+  window.requestAnimationFrame(updateReadingProgress);
 });
 
 const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
