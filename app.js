@@ -2,19 +2,40 @@
 const t = (key, variables) => window.siteI18n.t(key, variables);
 const menuButton = document.querySelector('.menu-toggle');
 const navigation = document.querySelector('#main-nav');
+const compactNavigation = window.matchMedia('(max-width: 1100px)');
+function syncNavigationAccessibility() {
+  const closed = compactNavigation.matches && menuButton.getAttribute('aria-expanded') !== 'true';
+  navigation.inert = closed;
+  if (closed) navigation.setAttribute('aria-hidden', 'true');
+  else navigation.removeAttribute('aria-hidden');
+}
 function closeMenu() {
+  if (compactNavigation.matches && navigation.contains(document.activeElement)) menuButton.focus({preventScroll: true});
   menuButton.setAttribute('aria-expanded', 'false');
   menuButton.setAttribute('aria-label', t('menuOpen'));
   navigation.classList.remove('is-open');
+  syncNavigationAccessibility();
 }
 menuButton.addEventListener('click', () => {
   const open = menuButton.getAttribute('aria-expanded') !== 'true';
   menuButton.setAttribute('aria-expanded', String(open));
   menuButton.setAttribute('aria-label', t(open ? 'menuClose' : 'menuOpen'));
   navigation.classList.toggle('is-open', open);
+  syncNavigationAccessibility();
 });
 navigation.addEventListener('click', event => {
-  if (event.target.closest('a')) closeMenu();
+  const link = event.target.closest('a');
+  if (!link) return;
+  closeMenu();
+  // Move keyboard focus to the chosen section before its menu link becomes inert.
+  if (compactNavigation.matches && link.getAttribute('href')?.startsWith('#')) {
+    const section = document.getElementById(link.getAttribute('href').slice(1));
+    if (section) {
+      section.setAttribute('tabindex', '-1');
+      section.focus({preventScroll: true});
+      section.addEventListener('blur', () => section.removeAttribute('tabindex'), {once: true});
+    }
+  }
 });
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && menuButton.getAttribute('aria-expanded') === 'true') {
@@ -25,9 +46,10 @@ document.addEventListener('keydown', event => {
 document.addEventListener('click', event => {
   if (!event.target.closest('.site-header')) closeMenu();
 });
-window.matchMedia('(min-width: 1101px)').addEventListener('change', event => {
-  if (event.matches) closeMenu();
+compactNavigation.addEventListener('change', () => {
+  closeMenu();
 });
+syncNavigationAccessibility();
 const copyButton = document.querySelector('.copy-email');
 const copyStatus = document.querySelector('#copy-status');
 let feedbackTimer;
@@ -62,19 +84,6 @@ copyButton.addEventListener('click', async () => {
   }, 4500);
 });
 document.querySelector('#year').textContent = new Date().getFullYear();
-if ('IntersectionObserver' in window) {
-  const navLinks = [...navigation.querySelectorAll('a')];
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      navLinks.forEach(link => {
-        if (link.getAttribute('href') === '#' + entry.target.id) link.setAttribute('aria-current', 'location');
-        else link.removeAttribute('aria-current');
-      });
-    });
-  }, {rootMargin: '-18% 0px -65% 0px', threshold: 0});
-  document.querySelectorAll('main section[id]').forEach(section => observer.observe(section));
-}
 
 const publicationStatus = document.querySelector('#publication-status');
 const papers = [...document.querySelectorAll('.paper')];
@@ -145,43 +154,5 @@ document.addEventListener('site:languagechange', () => {
     button.querySelector('span').textContent = t('citationCopy');
   });
   announceFilter();
-  window.requestAnimationFrame(updateReadingProgress);
+  window.siteMotion?.refresh();
 });
-
-const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
-let revealObserver;
-if ('IntersectionObserver' in window && !motionPreference.matches) {
-  revealObserver = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      entry.target.classList.add('is-visible');
-      revealObserver.unobserve(entry.target);
-    });
-  }, {threshold: 0.08, rootMargin: '0px 0px -15px 0px'});
-  document.querySelectorAll('.section-heading,.research-item,.experience-grid,.software-project,.about-copy,.contact-inner').forEach(element => {
-    if (element.getBoundingClientRect().top > window.innerHeight) {
-      element.classList.add('reveal-ready');
-      revealObserver.observe(element);
-    }
-  });
-}
-motionPreference.addEventListener('change', event => {
-  if (!event.matches) return;
-  revealObserver?.disconnect();
-  document.querySelectorAll('.reveal-ready').forEach(element => element.classList.add('is-visible'));
-});
-const readingProgress = document.querySelector('.reading-progress');
-let scrollScheduled = false;
-function updateReadingProgress() {
-  const total = document.documentElement.scrollHeight - window.innerHeight;
-  readingProgress.style.width = Math.min(100, Math.max(0, total > 0 ? window.scrollY / total * 100 : 0)) + '%';
-  scrollScheduled = false;
-}
-window.addEventListener('scroll', () => {
-  if (!scrollScheduled) {
-    scrollScheduled = true;
-    window.requestAnimationFrame(updateReadingProgress);
-  }
-}, {passive:true});
-window.addEventListener('resize', updateReadingProgress);
-updateReadingProgress();

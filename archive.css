@@ -1,0 +1,28 @@
+.academic-archive{border-top:1px solid var(--line)}
+.archive-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:46px;align-items:start}
+.archive-card{border-top:1px solid var(--line);min-width:0}
+.archive-card:nth-last-child(-n+2){border-bottom:1px solid var(--line)}
+.archive-card summary{display:flex;align-items:center;gap:17px;min-height:123px;padding:25px 3px;cursor:pointer;list-style:none}
+.archive-card summary::-webkit-details-marker{display:none}
+.archive-card summary:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:4px}
+.archive-index{font:italic 13px Georgia,serif;color:#8190a5;align-self:flex-start;padding-top:6px}
+.archive-heading{display:flex;flex-direction:column;gap:7px;min-width:0;flex:1}
+.archive-title{font:500 23px/1.4 var(--serif);letter-spacing:.6px}
+.archive-subtitle{font-size:11px;line-height:1.5;letter-spacing:.6px;color:var(--muted)}
+.archive-state{font-size:11px;color:var(--muted);white-space:nowrap}
+.archive-toggle{position:relative;display:block;width:21px;height:21px;flex:0 0 21px;color:var(--blue)}
+.archive-toggle:before,.archive-toggle:after{content:"";position:absolute;left:5px;right:5px;top:10px;height:1px;background:currentColor}
+.archive-toggle:after{transform:rotate(90deg)}
+.archive-panel{padding:0 25px 29px 33px;color:var(--muted);font-size:13px;line-height:1.95}
+.archive-facts{margin:0 0 16px}.archive-facts>div{display:grid;grid-template-columns:72px minmax(0,1fr);gap:12px;padding-block:5px}
+.archive-facts dt{font-size:11px;color:var(--muted)}.archive-facts dd{margin:0;color:var(--ink)}
+.archive-facts dd.archive-placeholder{color:var(--muted)}.archive-note{max-width:460px}
+.archive-related{display:inline-block;margin-top:15px;font-size:12px;line-height:1.8}
+.archive-related span{margin-left:8px}.site-updated{display:inline-block;margin-left:18px;color:#7d8da3;font-size:9px}.updated-label{margin-right:4px}
+html[lang="en"] .archive-title{font-size:24px;letter-spacing:0;line-height:1.35}
+html[lang="en"] .archive-subtitle{display:none}html[lang="en"] .archive-state{white-space:normal;max-width:74px;line-height:1.5}
+html[lang="en"] .archive-panel{font-size:13px;line-height:1.85}
+html[lang="en"] .archive-facts>div{grid-template-columns:90px minmax(0,1fr)}
+@media(max-width:1100px){.archive-grid{column-gap:30px}.archive-title{font-size:21px}.archive-card summary{gap:13px}html[lang="en"] .archive-title{font-size:22px}}
+@media(max-width:700px){.archive-grid{grid-template-columns:1fr}.archive-card:nth-last-child(2){border-bottom:0}.archive-card summary{min-height:111px;padding-block:23px}.archive-panel{padding-left:30px;padding-right:14px}.archive-title{font-size:23px}.academic-archive .section-heading{align-items:flex-start;flex-direction:column;gap:16px}.academic-archive .section-note{max-width:none}.site-updated{display:block;margin-left:0;margin-top:7px}}
+@media(max-width:370px){.archive-title{font-size:21px}.archive-card summary{gap:11px}.archive-state{font-size:10px}html[lang="en"] .archive-title{font-size:21px}}

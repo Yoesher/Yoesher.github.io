@@ -1,0 +1,77 @@
+/* A small motion vocabulary. All content remains visible without JavaScript. */
+:root{--motion-out:cubic-bezier(.22,.7,.2,1);--motion-quick:170ms;--motion-enter:480ms}
+.hero-copy>p,.hero-copy>h1,.hero-actions,.hero-portrait,.hero-art,.academic-art,.academic-art>path,.paper.filter-enter{animation:none!important}
+.reveal-ready,.reveal-ready.is-visible{opacity:1;transform:none;transition:none}
+.reading-progress{width:100%;transform:scaleX(0);transform-origin:left center;transition:none;contain:strict}
+.site-header:after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:0 5px 20px #263b580d;opacity:0;transition:opacity 220ms var(--motion-out)}
+.site-header.is-scrolled:after{opacity:1}
+.button{transition:transform var(--motion-quick) var(--motion-out),background-color var(--motion-quick) ease;transform:translateY(0)}
+.button:hover{box-shadow:0 6px 16px #3564c81a}
+.button:active{transform:translateY(0) scale(.985)}
+.button:focus-visible{transform:translateY(-2px)}
+.button span,.text-link span,.nav-contact span,.email-link span,.paper-actions a span,.archive-related span{transition:transform var(--motion-quick) var(--motion-out)}
+.text-link,.email-link,.paper-actions button,.paper-actions a,.copy-email,.language-switch button{transition:color var(--motion-quick) ease}
+.text-link:focus-visible>span[aria-hidden="true"],.button:focus-visible>span[aria-hidden="true"]{transform:translate(2px,-2px)}
+.main-nav a:not(.nav-contact):after{transform-origin:left;transition:transform 230ms var(--motion-out)}
+.main-nav a:focus-visible:after{transform:scaleX(1)}
+.main-nav .nav-contact{transition:background-color var(--motion-quick) ease,color var(--motion-quick) ease}
+.research-item{transition:transform 240ms var(--motion-out)}
+.research-item:hover{transform:none}
+.paper{position:relative;isolation:isolate}
+.paper:before{content:"";position:absolute;inset:12px -17px;z-index:-1;border-radius:14px;background:#ffffff;opacity:0;pointer-events:none;transition:opacity 200ms ease}
+.paper:after{content:"";position:absolute;bottom:-1px;left:0;right:0;height:1px;background:#95b0d7;transform:scaleX(0);transform-origin:left;transition:transform 300ms var(--motion-out);pointer-events:none}
+.paper-content h3{transition:color var(--motion-quick) ease}
+.paper:focus-within:before{opacity:.65}
+.paper:focus-within:after{transform:scaleX(1)}
+.paper:focus-within h3{color:#365f99}
+.archive-card summary{transition:color var(--motion-quick) ease}
+.archive-title,.archive-index{transition:color var(--motion-quick) ease}
+.archive-toggle:after{transition:transform 200ms var(--motion-out),opacity 150ms ease}
+.archive-card[open] .archive-toggle:after{transform:rotate(0);opacity:0}
+.archive-card summary:focus-visible .archive-title{color:var(--blue)}
+.archive-card[open] .archive-title{color:#365f99}
+.original-citation summary{transition:color var(--motion-quick) ease}
+.software-emblem{transition:transform 280ms var(--motion-out)}
+@media(hover:hover) and (pointer:fine){
+  .research-item:hover{transform:translateY(-3px)}
+  .paper:hover:before{opacity:.65}
+  .paper:hover:after{transform:scaleX(1)}
+  .paper:hover h3{color:#365f99}
+  .archive-card summary:hover .archive-title,.archive-card summary:hover .archive-index{color:var(--blue)}
+  .software-project:has(a:hover) .software-emblem{transform:translateY(-3px)}
+}
+@media(max-width:1100px){
+  /* Keeping the menu in layout while hidden allows a reversible opacity/transform exit. */
+  .main-nav,html[lang="en"] .main-nav{display:flex;visibility:hidden;opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity 160ms ease,transform 210ms var(--motion-out),visibility 0s linear 210ms;max-height:calc(100dvh - 88px);overflow-y:auto;overscroll-behavior:contain}
+  .main-nav.is-open,html[lang="en"] .main-nav.is-open{visibility:visible;opacity:1;transform:translateY(0);pointer-events:auto;transition-delay:0s}
+  .menu-toggle{transition:background-color var(--motion-quick) ease,border-color var(--motion-quick) ease}
+  .menu-toggle[aria-expanded="true"]{background:#e5eefc;border-color:#b9cdec}
+}
+@media(max-width:800px){.main-nav,html[lang="en"] .main-nav{max-height:calc(100dvh - 76px)}}
+@media(max-width:540px){.paper:before{inset:11px -10px;border-radius:10px}}
+
+/* The portrait and page background stay steady while the text changes language. */
+html.language-transition .hero-copy{view-transition-name:language-hero}
+html.language-transition #research{view-transition-name:language-research}
+html.language-transition .publications-inner{view-transition-name:language-publications}
+html.language-transition #experience{view-transition-name:language-experience}
+html.language-transition #opensource{view-transition-name:language-software}
+html.language-transition #about{view-transition-name:language-about}
+html.language-transition #resources{view-transition-name:language-resources}
+html.language-transition .contact-inner{view-transition-name:language-contact}
+html.language-transition .site-footer{view-transition-name:language-footer}
+::view-transition{pointer-events:none}
+::view-transition-group(*){animation:none}
+::view-transition-old(*){animation:language-out 110ms ease both}
+::view-transition-new(*){animation:language-in 170ms var(--motion-out) both}
+::view-transition-old(root){animation:none;opacity:0}
+::view-transition-new(root){animation:none}
+@keyframes language-out{to{opacity:0}}
+@keyframes language-in{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto!important}
+  *,*:before,*:after{animation:none!important;transition:none!important}
+  .button:hover,.button:active,.button:focus-visible,.research-item:hover,.software-project:has(a:hover) .software-emblem{transform:none!important}
+  a:hover>span[aria-hidden="true"],.text-link:focus-visible>span[aria-hidden="true"],.button:focus-visible>span[aria-hidden="true"]{transform:none!important}
+  ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}
+}

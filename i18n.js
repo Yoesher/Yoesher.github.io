@@ -148,6 +148,28 @@
   translate('.footer-name', 'He Guoxi <span lang="zh-CN">何国希</span>');
   translate('.back-top', 'Back to Top <span aria-hidden="true">↑</span>');
 
+  translate('#main-nav a[href="#resources"]', 'Archive');
+  translate('#resources-title', 'Academic Archive');
+  translate('#resources .section-note', 'CV, working papers, teaching, talks, and research materials.');
+  translate('#archive-cv .archive-title', 'Curriculum Vitae');
+  translate('#archive-cv .archive-state', 'To be added');
+  translate('#archive-cv .archive-facts>div:nth-child(1) dt', 'Current study');
+  translate('#archive-cv .archive-facts>div:nth-child(1) dd', 'PhD student in Sociology · Central China Normal University');
+  translate('#archive-cv .archive-facts>div:nth-child(2) dt', 'Dates');
+  translate('#archive-cv .archive-facts>div:nth-child(2) dd', 'To be added');
+  translate('#archive-cv .archive-note', 'Full education and academic history, together with a PDF CV, will be added here.');
+  translate('#archive-papers .archive-title', 'Working Papers');
+  translate('#archive-papers .archive-state', 'No public entries');
+  translate('#archive-papers .archive-note', 'Working papers will be listed when they are ready to be shared publicly.');
+  translate('#archive-teaching .archive-title', 'Teaching &amp; Talks');
+  translate('#archive-teaching .archive-state', 'To be added');
+  translate('#archive-teaching .archive-note', 'Courses, teaching assistantships, conference presentations, and lecture materials will be added here.');
+  translate('#archive-materials .archive-title', 'Data &amp; Research Notes');
+  translate('#archive-materials .archive-state', 'To be added');
+  translate('#archive-materials .archive-note', 'Data, replication code, and research notes will be added here.');
+  translate('#archive-materials .archive-related', 'Explore the published research tool <span aria-hidden="true">↗</span>');
+  translate('.updated-label', 'Updated');
+
   const messages = {
     'zh-CN': {
       menuOpen: '打开主导航', menuClose: '关闭主导航', emailField: '联系邮箱',
@@ -208,7 +230,13 @@
   }
   window.siteI18n = {t, setLanguage, get language() {return currentLanguage;}, getCitation: id => citations.get(id) || ''};
   document.querySelectorAll('[data-language]').forEach(button => {
-    button.addEventListener('click', () => setLanguage(button.dataset.language));
+    button.addEventListener('click', () => {
+      const nextLanguage = button.dataset.language;
+      if (nextLanguage === currentLanguage && !window.siteMotion?.languagePending) return;
+      const change = () => setLanguage(nextLanguage);
+      if (window.siteMotion?.transitionLanguage) window.siteMotion.transitionLanguage(change);
+      else change();
+    });
   });
   let initialLanguage = 'zh-CN';
   try {
