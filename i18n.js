@@ -54,8 +54,8 @@
   translate('#publications .section-note', 'Research on work, families, and childbearing.');
   translate('.publication-filters', 'Filter publications by publication status', 'aria-label');
   translate('[data-filter="all"]', 'All <span>3</span>');
-  translate('[data-filter="published"]', 'Published <span>1</span>');
-  translate('[data-filter="forthcoming"]', 'Forthcoming <span>2</span>');
+  translate('[data-filter="published"]', 'Published <span>2</span>');
+  translate('[data-filter="forthcoming"]', 'Forthcoming <span>1</span>');
   translate('.status-tag.published', 'Published');
   translate('.status-tag.forthcoming', 'Forthcoming');
 
@@ -68,7 +68,7 @@
     {
       id: 'two',
       title: 'Family Anchoring: Mechanisms of Territorial Reorganization in Fertility Support Policy',
-      journal: 'Qiushi', originalJournal: '求实', issue: '6', author: 'second', forthcoming: true
+      journal: 'Qiushi', originalJournal: '求实', issue: '6', author: 'second', forthcoming: false
     },
     {
       id: 'three',
